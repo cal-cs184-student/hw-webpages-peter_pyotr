@@ -32,23 +32,24 @@
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to webpage: <a href="petercg.org">petercg.org</a>
 
 		<br>
 		
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/sp25-hw2-pyotr">https://github.com/cal-cs184-student/sp25-hw2-pyotr</a>
 
-		<figure>
-			<img src="teapot.png" alt="Teapot" style="width:50%"/>
-			<figcaption>You can add images with captions!</figcaption>
-		</figure>
-
-		<!--
-		We've already added one heading per part, to make your write-up as navigable when grading. Please fit your write-up within these sections!
-		-->
-
+		
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		<p>
+		In this homework, I developed a comprehensive mesh editing system that spans both parametric and polygonal representations. In Section I, I implemented Bezier curves and surfaces using de Casteljau’s algorithm. This allowed for smooth, infinitely scalable curves and surfaces by recursively subdividing control points. In Section II, I worked extensively with a half‐edge data structure to represent triangle meshes. I implemented several key mesh processing operations, including area‐weighted vertex normals for smooth Phong shading, local edge flip operations for remeshing, and edge splits to increase mesh resolution.
+		</p>
+		<p>
+		I then combined these operations in a Loop subdivision scheme to upsample the mesh. This required careful recalculation of vertex positions using weighted averages, as well as strategic use of edge splits and selective edge flips to maintain mesh quality and symmetry. Through this project, I gained valuable insight into the importance of robust data structures for geometry processing. In particular, I learned how a well-designed half‐edge representation can simplify complex topological operations, even though its pointer manipulation requires careful debugging and validation.
+		</p>
+		<p>
+		Overall, this assignment deepened my understanding of both the mathematical foundations (such as de Casteljau’s algorithm and vertex weighting formulas) and the practical challenges of managing dynamic mesh connectivity. The experience of debugging subtle pointer issues and ensuring consistent mesh topology has greatly enhanced my skills in low-level graphics programming.
+		</p>
+		
 
 		<h2>Section I: Bezier Curves and Surfaces</h2>
 
@@ -367,7 +368,16 @@ To implement Loop subdivision, I broke the process into three steps:
   </li>
 </ol>
 
-
+<div style="display: flex; justify-content: center; gap: 40px;">
+	<div style="text-align: center;">
+	  <img src="sharpbefore.png" alt="Before" style="width:300px;">
+	  <figcaption>Before</figcaption>
+	</div>
+	<div style="text-align: center;">
+	  <img src="sharpafter.png" alt="After" style="width:300px;">
+	  <figcaption>After</figcaption>
+	</div>
+  </div>
 <p>
 <strong>Observations:</strong><br>
 <ul>
