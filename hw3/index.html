@@ -32,8 +32,8 @@
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to webpage:  <a href=" https://cal-cs184-student.github.io/hw-webpages-peter_pyotr"> https://cal-cs184-student.github.io/hw-webpages-peter_pyotr/</a>
+		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/sp25-hw3-pt">https://github.com/cal-cs184-student/sp25-hw3-pt</a>
 		
 		<figure>
 			<img src="cornell.png" alt="Cornell Boxes with Bunnies" style="width:70%"/>
@@ -45,49 +45,488 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
-
-		<h2>Part 1: Ray Generation and Scene Intersection</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
-		</div>
+		<p>
+		In this homework, we built a ray tracer from scratch, implementing fundamental components of a rendering pipeline, such as ray generation, scene intersection, and primitive testing. The objective was to develop a system that can trace rays from a camera, compute intersections with objects in a 3D scene, and lay the foundation for more advanced rendering features such as lighting, shading, and global illumination.
+		</p>
 		
-		<h2>Part 2: Bounding Volume Hierarchy</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+		Through this project, I learned how critical it is to set up the right transformations between camera space, world space, and the image plane. I also deepened my understanding of how ray tracing works at the core level, and how fundamental techniques like ray intersection with primitives (triangles, spheres, etc.) are the building blocks for realistic rendering.
+		</p>
+		<h2>Part 1: Ray Generation and Triangle Intersection</h2>
+<p>
+In Part 1, the main objective was to implement the generation of camera rays and the intersection logic for the scene, which are crucial for the ray tracing process. The camera rays are generated based on the pixel coordinates, and these rays interact with the objects in the scene.
+</p>
 
-		<h2>Part 3: Direct Illumination</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<p>
+For ray generation, we first transformed the normalized image coordinates (x, y) into camera space and then generated rays that pass through the camera sensor. These rays are then transformed into world space to match the 3D coordinates of the scene. The camera's position, field of view, and transformations are used to determine the direction of each ray and where it will intersect the scene.
+</p>
 
-		<h2>Part 4: Global Illumination</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<p>
+For scene intersection, the task was to compute whether the rays intersect with any objects in the scene, such as triangles or spheres. When an intersection occurs, information about the surface normal and material properties is used to calculate lighting and shading in the later parts of the pipeline.
+</p>
 
-		<h2>Part 5: Adaptive Sampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<p>
+The triangle intersection algorithm implemented follows the Möller–Trumbore intersection test. This method efficiently calculates whether a ray intersects a triangle and computes the intersection point if one exists. The algorithm involves:
+</p>
+<ul>
+  <li>Computing the triangle edges and their cross product with the ray direction to find a potential intersection.</li>
+  <li>Checking if the intersection occurs within the bounds of the triangle, ensuring the result is valid.</li>
+  <li>Updating the closest intersection based on the computed <code>t</code> value, which represents the distance to the intersection point along the ray.</li>
+</ul>
 
+<p>
+The image below shows the result from running the ray generation and scene intersection process. This is a rendered scene where camera rays interact with various objects in the scene, providing a foundation for subsequent shading and lighting calculations.
+</p>
+
+<figure>
+  <img src="CBspheres.png" alt="Rendered Scene with Camera Rays" style="width:70%"/>
+  <figcaption>Rendered Scene with Camera Rays</figcaption>
+</figure>
+
+<p>
+In this example, rays are traced from the camera's position and interact with various objects in the scene. This process is essential for the following steps in rendering, including lighting and shading.
+</p>
+
+<p>
+This part of the project sets up the basic infrastructure for ray tracing by enabling the visualization of how rays interact with the scene. This groundwork will be expanded to handle lighting, shadows, and global illumination in the next steps of the assignment.
+</p>
+
+<h3>Triangle Intersection Algorithm</h3>
+<p>
+The triangle intersection algorithm used is based on the Möller–Trumbore method, which is widely used for ray-triangle intersection tests. The steps are as follows:
+</p>
+<ul>
+  <li>Compute two triangle edges <code>e1</code> and <code>e2</code>, and the vector <code>h</code> as the cross product of the ray direction and <code>e2</code>.</li>
+  <li>Calculate the determinant <code>a</code> and check if it is close to zero (indicating no intersection or parallelism).</li>
+  <li>If <code>a</code> is non-zero, compute the intersection point using the barycentric coordinates and check if it lies inside the triangle.</li>
+  <li>Update the ray's <code>max_t</code> value if the intersection is valid.</li>
+</ul>
+<p>
+This implementation ensures that only valid intersections are considered and that the closest intersection is chosen along the ray's path.
+</p>
+
+
+<p>
+This triangle intersection algorithm forms the core of the intersection tests used in the ray tracing pipeline. It is crucial for accurately determining the interaction of rays with scene objects, which is then followed by lighting, shading, and rendering calculations.
+</p>
+
+<h2>Part 2: Bounding Volume Hierarchy (BVH)</h2>
+
+<h3>BVH Construction Algorithm</h3>
+<p>
+In Part 2, the goal was to optimize the rendering process by constructing a Bounding Volume Hierarchy (BVH) for faster ray-triangle intersection tests. The BVH is a binary tree where each node represents a bounding box that encloses a set of scene primitives (e.g., triangles). By recursively dividing the scene into smaller clusters of primitives, we can quickly eliminate large portions of the scene that a ray cannot intersect, significantly reducing the number of intersection tests.
+</p>
+
+<p>
+The BVH construction begins by computing the bounding box for all primitives. If the number of primitives in the current node exceeds the maximum leaf size, the node is split into two child nodes. The splitting axis is chosen based on which axis (X, Y, or Z) gives the largest spread in the centroids of the primitives' bounding boxes. This heuristic helps in balancing the tree and speeding up the traversal.
+</p>
+
+<p>
+The algorithm continues recursively, dividing the primitives into left and right subtrees until the leaf node contains fewer than <code>max_leaf_size</code> primitives. The result is a tree structure that facilitates efficient ray tracing.
+</p>
+
+<h3>Images with Normal Shading for BVH-Accelerated Scenes</h3>
+<p>
+The following images demonstrate the significant speed-up provided by BVH acceleration for rendering scenes with more complex geometries.
+</p>
+
+<figure>
+  <img src="cow.png" alt="Rendered Scene" style="width:70%"/>
+  <figcaption>Rendered Scene(Cow Model)</figcaption>
+</figure>
+
+<figure>
+  <img src="lucy.png" alt="Rendered Scene" style="width:70%"/>
+  <figcaption>Rendered Scene with BVH Acceleration (CBlucy Model)</figcaption>
+</figure>
+
+<h3>Performance Comparison</h3>
+<p>
+As you can see in the images above, the BVH-accelerated rendering significantly improves the rendering performance, especially for complex geometries. The following are the times taken for rendering the <code>cow.dae</code> and <code>CBlucy.dae</code> models:
+</p>
+<ul>
+  <li><strong>Cow Model - No BVH Acceleration:</strong> 28.2188 seconds</li>
+  <li><strong>Cow Model - With BVH Acceleration:</strong> 0.0685 seconds</li>
+  <li><strong>CBlucy Model - No BVH Acceleration:</strong> 876.1267 seconds</li>
+  <li><strong>CBlucy Model - With BVH Acceleration:</strong> 0.0674 seconds</li>
+</ul>
+
+<p>
+This reduction in time is achieved by efficiently organizing the scene primitives in a BVH and eliminating unnecessary intersection tests. The performance improvement is particularly noticeable for large and complex models like <code>CBlucy.dae</code>, which initially took several minutes to render.
+</p>
+
+<h3>Max Planck Model Performance</h3>
+<p>
+For a very large model, <code>maxplanck.dae</code>, you can expect even greater time reduction with BVH acceleration. The rendering time for this model with BVH acceleration is significantly faster than without BVH.
+</p>
+
+<figure>
+  <img src="maxplanck.png" alt="Rendered Max Planck Model with BVH" style="width:70%"/>
+  <figcaption>Rendered Max Planck Model with BVH Acceleration</figcaption>
+</figure>
+
+<h3>Summary</h3>
+<p>
+The implementation of the BVH structure in this task allowed us to optimize the intersection tests by reducing the number of primitives that need to be checked. By splitting the scene recursively based on the centroids of the bounding boxes, we achieved a substantial performance gain. This allows for the efficient rendering of complex scenes, which would otherwise take a long time to process with brute force intersection checks.
+</p>
+
+<h2>Part 3: Direct Illumination</h2>
+<p>
+In Part 3, we focus on simulating direct illumination, which refers to the light arriving at a point directly from a light source, without bouncing off other surfaces. This is an important step in rendering, as it provides the basic foundation for more advanced rendering techniques such as global illumination.
+</p>
+
+<h3>Direct Lighting Implementations</h3>
+<p>
+There are two main methods to estimate direct lighting: uniform hemisphere sampling and importance sampling. Both methods estimate the amount of light that hits a point on a surface, but they do so in different ways.
+</p>
+
+<ul>
+  <li><strong>Uniform Hemisphere Sampling</strong>: In this method, the incoming light directions are sampled uniformly over a hemisphere centered around the surface normal. While simple, this method can be noisy, especially in complex scenes with many light sources or soft shadows.</li>
+  <li><strong>Importance Sampling</strong>: Instead of sampling uniformly, this method samples light directions directly from the light sources. This is more efficient because it focuses the sampling in directions that are more likely to contribute to the illumination at the hit point.</li>
+</ul>
+
+<h3>Images Rendered with Both Implementations of Direct Lighting</h3>
+<p>
+The following images demonstrate the difference between these two methods, showing the rendered scene with both types of direct lighting implementation. We can observe how the noise levels and shadow softness vary with the different sampling strategies.
+</p>
+
+<figure>
+  <img src="CBbunny_H_64_32.png" alt="Rendered Scene with Uniform Hemisphere Sampling" style="width:70%"/>
+  <figcaption>Rendered Scene with Uniform Hemisphere Sampling</figcaption>
+</figure>
+
+<figure>
+  <img src="bunny_64_32.png" alt="Rendered Scene with Importance Sampling" style="width:70%"/>
+  <figcaption>Rendered Scene with Importance Sampling</figcaption>
+</figure>
+
+<p>
+As you can see from the images above, importance sampling generally produces smoother and more accurate results in terms of lighting, especially in areas with complex lighting conditions such as soft shadows. On the other hand, uniform hemisphere sampling often results in more noise and less accurate results in these areas.
+</p>
+
+<h3>Performance Comparison with Different Sampling Rates</h3>
+<p>
+We also compare the noise levels in soft shadows when rendering with different numbers of light rays. The results are shown below for both uniform hemisphere sampling and importance sampling, with different numbers of rays per light source and sample rates:
+</p>
+
+<ul>
+  <li><strong>1 Ray per Light Source</strong>: The rendering is highly noisy, and the soft shadows are not well-defined.</li>
+  <li><strong>4 Rays per Light Source</strong>: A noticeable reduction in noise, but the shadows still appear somewhat rough.</li>
+  <li><strong>16 Rays per Light Source</strong>: The shadows become smoother, with significantly less noise.</li>
+  <li><strong>64 Rays per Light Source</strong>: The rendering is much cleaner, and the soft shadows look more natural.</li>
+</ul>
+
+<h3>Rendered Results with 1, 4, 16, and 64 Light Rays</h3>
+<p>
+Here are images rendered with increasing numbers of rays per light source. These images were rendered using importance sampling for better efficiency and lower noise levels.
+</p>
+
+<figure>
+  <img src="dragon_1_1.png" alt="1 Ray Per Light Source" style="width:70%"/>
+  <figcaption>Rendered with 1 Ray Per Light Source</figcaption>
+</figure>
+
+<figure>
+  <img src="dragon_4_1.png" alt="4 Rays Per Light Source" style="width:70%"/>
+  <figcaption>Rendered with 4 Rays Per Light Source</figcaption>
+</figure>
+
+<figure>
+  <img src="dragon_16_1.png" alt="16 Rays Per Light Source" style="width:70%"/>
+  <figcaption>Rendered with 16 Rays Per Light Source</figcaption>
+</figure>
+
+<figure>
+  <img src="dragon_64_1.png" alt="64 Rays Per Light Source" style="width:70%"/>
+  <figcaption>Rendered with 64 Rays Per Light Source</figcaption>
+</figure>
+
+<p>
+The images above clearly show the reduction in noise and improvement in shadow quality as we increase the number of rays per light source. The higher the number of rays, the smoother and more realistic the shadows become.
+</p>
+
+<h3>Comparison of Uniform Hemisphere Sampling and Importance Sampling</h3>
+<p>
+Comparing the results from uniform hemisphere sampling and importance sampling, we can see that importance sampling offers a much cleaner and more accurate result, especially for scenes with point lights or more complex lighting. The uniform sampling method, although simpler, tends to produce more noise and less precise results in these cases.
+</p>
+
+<p>
+Overall, importance sampling is the better approach for reducing noise and achieving more realistic direct lighting effects, especially in scenes with complex light distributions and soft shadows.
+</p>
+
+
+<h2>Part 4: Global Illumination</h2>
+
+<h3>Implementation of Indirect Lighting Function</h3>
+<p>
+	The <code>at_least_one_bounce_radiance</code> function was implemented to handle the indirect lighting (bounces of light). The function follows these high-level steps:
+</p>
+<ul>
+	<li><strong>Initial Direct Lighting:</strong> The function first computes the direct lighting contribution at the intersection point using the <code>one_bounce_radiance</code> function. This provides the direct light arriving at the point from the light sources.</li>
+	<li><strong>BSDF Sampling:</strong> The function then samples the Bidirectional Scattering Distribution Function (BSDF) to estimate the incoming radiance direction. The sample is taken uniformly over the hemisphere, which allows for modeling diffuse surfaces (Lambertian reflectance).</li>
+	<li><strong>Ray Tracing and Recursion:</strong> After sampling the incoming direction, a new ray is cast in that direction from the intersection point. This ray is then traced to check for further intersections. If an intersection occurs, the function is called recursively to calculate additional bounces of light.</li>
+	<li><strong>Accumulation:</strong> The results from each bounce are accumulated to simulate the effect of multiple light bounces contributing to the final radiance. In some cases, the bounces are limited to a maximum number of bounces (<code>max_ray_depth</code>), and the radiance is calculated recursively.</li>
+</ul>
+
+<h3>Rendered Images with Direct and Indirect Illumination</h3>
+<p>
+	To demonstrate the difference between direct and indirect illumination, I rendered images using both techniques separately. The images below show the result of these two renderings with 1024 samples per pixel.
+</p>
+
+<h4>Direct Illumination Only</h4>
+<p>
+	<strong>Description:</strong> This image was rendered considering only the direct lighting contributions from light sources.
+	<strong>Observation:</strong> The image shows only the light that directly hits the surfaces in the scene, without considering any light bounces. Shadows are hard and light distribution is less realistic.
+</p>
+<figure>
+	<img src="CBbunny_m_1_t.png" alt="Direct Illumination Only" style="width:70%"/>
+	<figcaption>Rendered image using only direct illumination (m=1, 1024 samples).</figcaption>
+</figure>
+
+<h4>Indirect Illumination Only</h4>
+<p>
+	<strong>Description:</strong> This image was rendered by considering only the indirect lighting, i.e., the light that has bounced off other surfaces before reaching the camera.
+	<strong>Observation:</strong> This image shows a more diffused, realistic lighting effect, with soft shadows and light bouncing around the scene.
+</p>
+<figure>
+	<img src="CBbunny_m_2_f.png" alt="Indirect Illumination Only" style="width:70%"/>
+	<figcaption>Rendered image using only indirect illumination (m=2, 1024 samples).</figcaption>
+</figure>
+
+<h3>Rendered Views with Varying Bounces of Light</h3>
+<p>
+	For the <code>CBbunny.dae</code> scene, I rendered the light bounces with different <code>max_ray_depth</code> values. I specifically set the <code>max_ray_depth</code> to values from 0 to 5 to observe how different numbers of light bounces affected the final image.
+</p>
+<ul>
+	<li><strong>m=0:</strong> No bounces, only direct lighting.</li>
+	<li><strong>m=1:</strong> First bounce of light (light reflects once off another surface).</li>
+	<li><strong>m=2:</strong> Two bounces of light, showing more interaction between surfaces.</li>
+	<li><strong>m=3:</strong> Three bounces, resulting in even more complex lighting.</li>
+	<li><strong>m=4:</strong> Four bounces, capturing deeper indirect lighting effects.</li>
+	<li><strong>m=5:</strong> Five bounces, showing significant color bleeding and global illumination effects.</li>
+</ul>
+
+<h3>Comparison of Accumulated and Non-Accumulated Bounces</h3>
+<p>
+	To demonstrate the effect of accumulating multiple bounces versus non-accumulating the bounces, I rendered the scene with <code>isAccumBounces=false</code> and compared the results. The images below show the difference between the accumulated and non-accumulated bounces for <code>CBbunny.dae</code>.
+</p>
+
+<h4>Non-Accumulated Bounces</h4>
+<figure>
+	<img src="CBbunny_0.png" alt="Non-Accumulated Bounces" style="width:70%"/>
+	<figcaption>Non-Accumulated Bounces (m=0)</figcaption>
+</figure>
+
+<figure>
+	<img src="CBbunny_m_1_f.png" alt="Non-Accumulated First Bounce" style="width:70%"/>
+	<figcaption>Non-Accumulated First Bounce (m=1)</figcaption>
+</figure>
+
+<figure>
+	<img src="CBbunny_m_2_f.png" alt="Non-Accumulated Second Bounce" style="width:70%"/>
+	<figcaption>Non-Accumulated Second Bounce (m=2)</figcaption>
+</figure>
+<figure>
+	<img src="CBbunny_m_3_f.png" alt="Non-Accumulated Second Bounce" style="width:70%"/>
+	<figcaption>Non-Accumulated Third Bounce (m=3)</figcaption>
+</figure>
+<figure>
+	<img src="CBbunny_m_4_f.png" alt="Non-Accumulated Second Bounce" style="width:70%"/>
+	<figcaption>Non-Accumulated Fourth Bounce (m=4)</figcaption>
+</figure>
+<figure>
+	<img src="CBbunny_m_5_f.png" alt="Non-Accumulated Second Bounce" style="width:70%"/>
+	<figcaption>Non-Accumulated Fifth Bounce (m=5)</figcaption>
+</figure>
+<h4>Accumulated Bounces</h4>
+<figure>
+	<img src="CBbunny_0.png" alt="Accumulated Bounces" style="width:70%"/>
+	<figcaption>Accumulated Bounces (m=0)</figcaption>
+</figure>
+
+<figure>
+	<img src="CBbunny_m_1_t.png" alt="Accumulated First Bounce" style="width:70%"/>
+	<figcaption>Accumulated First Bounce (m=1)</figcaption>
+</figure>
+
+<figure>
+	<img src="CBbunny_m_2_t.png" alt="Accumulated Second Bounce" style="width:70%"/>
+	<figcaption>Accumulated Second Bounce (m=2)</figcaption>
+</figure>
+<figure>
+	<img src="CBbunny_m_3_t.png" alt="Accumulated Second Bounce" style="width:70%"/>
+	<figcaption>Accumulated Third Bounce (m=3)</figcaption>
+</figure>
+<figure>
+	<img src="CBbunny_m_4_t.png" alt="Accumulated Second Bounce" style="width:70%"/>
+	<figcaption>Accumulated Fourth Bounce (m=4)</figcaption>
+</figure>
+<figure>
+	<img src="CBbunny_m_5_t.png" alt="Accumulated Second Bounce" style="width:70%"/>
+	<figcaption>Accumulated Fifth Bounce (m=5)</figcaption>
+</figure>
+
+<h3>Russian Roulette Rendering</h3>
+<p>
+	Finally, I implemented **Russian Roulette** as a way to probabilistically terminate light paths after a certain number of bounces. This prevents the algorithm from running indefinitely and provides a more efficient way to calculate global illumination.
+</p>
+
+<h4>Russian Roulette Rendering (m=0 to m=100)</h4>
+<figure>
+	<img src="CBbunny_0.png" alt="Russian Roulette m=0" style="width:70%"/>
+	<figcaption>Russian Roulette Rendering (m=0)</figcaption>
+</figure>
+
+<figure>
+	<img src="CBbunny_R_m_1.png" alt="Russian Roulette m=1" style="width:70%"/>
+	<figcaption>Russian Roulette Rendering (m=1)</figcaption>
+</figure>
+
+<figure>
+	<img src="CBbunny_R_m_2.png" alt="Russian Roulette m=2" style="width:70%"/>
+	<figcaption>Russian Roulette Rendering (m=2)</figcaption>
+</figure>
+<figure>
+	<img src="CBbunny_R_m_3.png" alt="Russian Roulette m=2" style="width:70%"/>
+	<figcaption>Russian Roulette Rendering (m=3)</figcaption>
+</figure>
+<figure>
+	<img src="CBbunny_R_m_4.png" alt="Russian Roulette m=2" style="width:70%"/>
+	<figcaption>Russian Roulette Rendering (m=4)</figcaption>
+</figure>
+<figure>
+	<img src="CBbunny_R_m_5.png" alt="Russian Roulette m=2" style="width:70%"/>
+	<figcaption>Russian Roulette Rendering (m=5)</figcaption>
+</figure>
+<figure>
+	<img src="CBbunny_Russian_Roulette.png" alt="Russian Roulette m=2" style="width:70%"/>
+	<figcaption>Russian Roulette Rendering (m=100)</figcaption>
+</figure>
+<h3>Comparison of Different Sample Rates</h3>
+<p>
+	Finally, I rendered the scene with varying sample rates per pixel to observe how different levels of sampling affect the quality of the image. The following sample rates were tested:
+</p>
+<ul>
+	<li><strong>1 sample per pixel:</strong> Shows a rough approximation of the lighting.</li>
+	<li><strong>2, 4, 8, 16, 64, and 1024 samples per pixel:</strong> These images progressively improve the quality of the lighting, with higher samples resulting in less noise and more accurate global illumination.</li>
+</ul>
+
+<figure>
+	<img src="CBbunny_1sample.png" alt="1 Sample per Pixel" style="width:70%"/>
+	<figcaption>1 Sample per Pixel</figcaption>
+</figure>
+
+<figure>
+	<img src="CBbunny_2samples.png" alt="2 Samples per Pixel" style="width:70%"/>
+	<figcaption>2 Samples per Pixel</figcaption>
+</figure>
+
+<figure>
+	<img src="CBbunny_4samples.png" alt="4 Samples per Pixel" style="width:70%"/>
+	<figcaption>4 Samples per Pixel</figcaption>
+</figure>
+
+<figure>
+	<img src="CBbunny_8samples.png" alt="8 Samples per Pixel" style="width:70%"/>
+	<figcaption>8 Samples per Pixel</figcaption>
+</figure>
+
+<figure>
+	<img src="CBbunny_16samples.png" alt="16 Samples per Pixel" style="width:70%"/>
+	<figcaption>16 Samples per Pixel</figcaption>
+</figure>
+
+<figure>
+	<img src="CBbunny_64samples.png" alt="64 Samples per Pixel" style="width:70%"/>
+	<figcaption>64 Samples per Pixel</figcaption>
+</figure>
+
+<figure>
+	<img src="CBbunny_1024samples.png" alt="1024 Samples per Pixel" style="width:70%"/>
+	<figcaption>1024 Samples per Pixel</figcaption>
+</figure>
+
+
+<h2>Part 5: Adaptive Sampling</h2>
+
+			<h3>Explanation of Adaptive Sampling</h3>
+			<p>
+				Adaptive sampling is a technique used to focus computation resources on parts of the image that require more samples to reduce noise, while using fewer samples for areas where the image is already converging. In Monte Carlo path tracing, noise can be reduced by increasing the number of samples per pixel, but this uniform approach can lead to unnecessary computation in some regions.
+			</p>
+			<p>
+				Adaptive sampling aims to address this by analyzing each pixel individually. For each pixel, we track the mean and standard deviation of the samples, and use these to decide whether more samples are needed. We calculate a measure, \( I = 1.96 \times \frac{\sigma}{\sqrt{n}} \), to estimate the convergence of the pixel. If \( I \) is sufficiently small (based on a tolerance), we stop sampling for that pixel. Otherwise, we continue tracing rays.
+			</p>
+			<p>
+				The algorithm operates as follows:
+			</p>
+			<ul>
+				<li>We trace samples through each pixel and calculate the mean (μ) and standard deviation (σ) of the illuminance.</li>
+				<li>We use the formula \( I = 1.96 \times \frac{\sigma}{\sqrt{n}} \) to measure the pixel's convergence.</li>
+				<li>If the convergence measure \( I \) is smaller than a threshold determined by \( \text{maxTolerance} \times \mu \), we consider the pixel converged and stop sampling.</li>
+				<li>If not, we continue sampling more rays for that pixel.</li>
+			</ul>
+			<p>
+				This allows us to avoid using a high number of samples uniformly across the image, focusing computational resources where they are most needed.
+			</p>
+
+			<h3>Implementation of Adaptive Sampling</h3>
+			<p>
+				The adaptive sampling was implemented in the <code>raytrace_pixel</code> function within <code>src/pathtracer/pathtracer.cpp</code>. The convergence measure \( I \) was computed for each pixel, and the algorithm decides whether to continue sampling or stop based on the result.
+			</p>
+			<p>
+				I also introduced the <code>sampleCountBuffer</code> to track the number of samples taken per pixel, which helps in visualizing the convergence status for each pixel in the final render.
+			</p>
+
+			<h3>Rendered Images with Adaptive Sampling</h3>
+			<p>
+				I rendered two scenes to demonstrate the effectiveness of adaptive sampling: <code>dragon.dae</code> and <code>CBspheres.dae</code>. For both scenes, I used 2048 samples per pixel, and the adaptive sampling algorithm optimized the number of samples per pixel, focusing on regions that still had high variance or noise.
+			</p>
+
+			<h4>Dragon Scene: Adaptive Sampling</h4>
+			<p>
+				The first scene is the <code>dragon.dae</code> model. Below is the sampling rate image, showing the number of samples used in each pixel. The red regions indicate areas where more samples were required, and the blue regions show areas that converged quickly.
+			</p>
+
+			<figure>
+				<img src="dragon_sample_rate.png" alt="Dragon Sample Rate" style="width:70%"/>
+				<figcaption>Sampling Rate Image for Dragon (Adaptive Sampling).</figcaption>
+			</figure>
+
+			<p>
+				The second image shows the final render of the <code>dragon.dae</code> scene, with the adaptive sampling technique applied.
+			</p>
+
+			<figure>
+				<img src="dragon_sample.png" alt="Dragon Rendered Image" style="width:70%"/>
+				<figcaption>Rendered Image of Dragon (2048 Samples per Pixel).</figcaption>
+			</figure>
+
+			<h4>CBspheres Scene: Adaptive Sampling</h4>
+			<p>
+				The second scene is the <code>CBspheres.dae</code> model. Below is the sampling rate image, indicating how the adaptive sampling algorithm adjusted the sampling rates across the image.
+			</p>
+
+			<figure>
+				<img src="sphere_sample_rate.png" alt="CBspheres Sample Rate" style="width:70%"/>
+				<figcaption>Sampling Rate Image for CBspheres (Adaptive Sampling).</figcaption>
+			</figure>
+
+			<p>
+				The final render for the <code>CBspheres.dae</code> scene shows the noise-free result after applying adaptive sampling.
+			</p>
+
+			<figure>
+				<img src="sphere_sample.png" alt="CBspheres Rendered Image" style="width:70%"/>
+				<figcaption>Rendered Image of CBspheres (2048 Samples per Pixel).</figcaption>
+			</figure>
+
+			<h3>Comparison of Sampling Rates and Render Quality</h3>
+			<p>
+				The adaptive sampling technique results in faster rendering times and higher quality images, as it focuses on areas that need more refinement. The sample rate images for both scenes show the differences in the number of samples per pixel, with higher rates in more complex or noisy areas.
+			</p>
+			<p>
+				The rendered images demonstrate significant reduction in noise while using fewer samples in less demanding areas of the image. This leads to more efficient rendering with less computational cost, making adaptive sampling an essential tool for real-time ray tracing.
+			</p>
 		<h2>(Optional) Part 6: Extra Credit Opportunities</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 		
