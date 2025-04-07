@@ -28,7 +28,7 @@
 	<body>
 		<div class="container">
 		<h1>CS184/284A Spring 2025 Homework 4 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+		<div style="text-align: center;">Name:Zitong hu </div>
 
 		<br>
 
@@ -50,46 +50,422 @@
 		<h2>Overview</h2>
 		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
 
-		<h2>Part 1: Masses and springs</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<h2>Part 1: Masses and Springs</h2>
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="clothsim.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="clothsim.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="clothsim.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="clothsim.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
-		</div>
+<p>
+In this section, I implemented a cloth simulation model using a grid of point masses connected by springs. The cloth is discretized into a grid where each point mass represents a node, and springs between these nodes enforce different constraints to mimic the physical behavior of cloth.
+</p>
+There are three types of springs:
+</p>
+<ul>
+  <li><strong>Structural Constraints:</strong> Each mass is connected to its immediate left and top neighbors. These springs maintain the basic shape and integrity of the cloth.</li>
+  <li><strong>Shearing Constraints:</strong> Each mass is connected to its diagonal upper left and upper right neighbors. These springs prevent shear deformations.</li>
+  <li><strong>Bending Constraints:</strong> Each mass is connected to the mass two steps to its left and two steps above. These springs enhance the cloth’s resistance to bending.</li>
+</ul>
 
-		<h2>Part 2: Simulation via numerical integration</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<p>
+Throughout the implementation, special attention was given to correctly converting the 2D grid indices into the corresponding 1D vector indices and handling edge cases to avoid out-of-bound errors.
+</p>
 
-		<h2>Part 3: Handling collisions with other objects</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<h3>Experimental Results</h3>
+<p>
+To verify the correct construction of the grid and springs, I captured screenshots of the cloth wireframe under different constraint configurations:
+</p>
 
-		<h2>Part 4: Handling self-collisions</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<h4>1. Without Shearing Constraints</h4>
+<p>
+This configuration only uses the structural and bending constraints. The cloth maintains its overall shape but exhibits noticeable gaps where shear constraints would normally provide additional stability.
+</p>
+<img src="withoutsharing.png" alt="Cloth simulation without shearing constraints">
+<figcaption>Figure 1: Cloth wireframe with only structural and bending constraints.</figcaption>
 
-		<h2>Part 5: Shaders</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<h4>2. With Only Shearing Constraints</h4>
+<p>
+Here, only the shearing constraints are enabled. This setup highlights how the diagonal connections affect the cloth’s deformation under stress.
+</p>
+<img src="onlysharing.png" alt="Cloth simulation with only shearing constraints">
+<figcaption>Figure 2: Cloth wireframe with only shearing constraints enabled.</figcaption>
+
+<h4>3. With All Constraints</h4>
+<p>
+When all constraints (structural, shearing, and bending) are enabled, the cloth exhibits a balanced behavior, accurately representing the interplay between various forces.
+</p>
+<img src="all.png" alt="Cloth simulation with all constraints">
+<figcaption>Figure 3: Cloth wireframe with all constraints enabled.</figcaption>
+
+<h3>Conclusion and Insights</h3>
+<p>
+Implementing the grid of point masses and springs provided valuable insights into the importance of data structures and careful index mapping in physical simulations. Managing edge cases and ensuring correct neighbor connectivity are crucial for a robust simulation. This part laid the foundation for further enhancements in numerical integration and collision handling, deepening our understanding of cloth dynamics.
+</p>
+
+<h2>Part 2: Simulation via Numerical Integration</h2>
+
+<p>
+In this part, I implement the simulation of the cloth using numerical integration techniques. The goal is to compute the movement of the cloth's point masses over time based on the forces acting on them, such as external forces (e.g., gravity) and internal forces (e.g., spring forces).
+</p>
+
+
+<h4>1. Effects of the Spring Constant (ks)</h4>
+<p>
+The spring constant \(k_s\) determines how stiff the cloth is. A very low spring constant will make the cloth behave like a loose, easily deformable fabric, while a very high spring constant will make the cloth rigid and resistant to deformation.
+</p>
+<img src="lowks.png" alt="Cloth simulation with low spring constant">
+<figcaption>Figure 1: Cloth simulation with low spring constant.</figcaption>
+
+<img src="highks.png" alt="Cloth simulation with high spring constant">
+<figcaption>Figure 2: Cloth simulation with high spring constant.</figcaption>
+
+<h4>2. Effects of Density</h4>
+<p>
+The density of the cloth affects the mass of each point mass. A higher density results in a heavier cloth that falls more slowly, while a lower density causes the cloth to fall faster.
+</p>
+<img src="highden.png" alt="Cloth simulation with high density">
+<figcaption>Figure 3: Cloth simulation with high density.</figcaption>
+
+<img src="lowden.png" alt="Cloth simulation with low density">
+<figcaption>Figure 4: Cloth simulation with low density.</figcaption>
+
+<h4>3. Effects of Damping</h4>
+<p>
+The damping factor simulates the loss of energy due to friction and other factors. A higher damping value causes the cloth to stop moving faster, while a lower damping value allows the cloth to continue moving for longer periods.
+</p>
+<img src="highdam.png" alt="Cloth simulation with high damping">
+<figcaption>Figure 5: Cloth simulation with high damping.</figcaption>
+
+<img src="lowdam.png" alt="Cloth simulation with low damping">
+<figcaption>Figure 6: Cloth simulation with low damping.</figcaption>
+
+<h4>4. Final Resting State</h4>
+<p>
+Here is a screenshot of the cloth in its final resting state from the scene/pinned4.json, showing the cloth with four pinned corners:
+</p>
+<img src="pin4.png" alt="Cloth resting state">
+<figcaption>Figure 7: Final resting state of the cloth (scene/pinned4.json).</figcaption>
+
+<h3>Conclusion and Observations</h3>
+<p>
+By adjusting parameters such as the spring constant, density, and damping,I can observe various behaviors in the cloth simulation:
+</p>
+<ul>
+  <li>A low spring constant causes the cloth to stretch and deform easily, while a high spring constant keeps the cloth rigid.</li>
+  <li>Increasing the density makes the cloth heavier and slower to fall, whereas decreasing the density allows the cloth to fall more quickly.</li>
+  <li>A higher damping value leads to the cloth coming to rest more quickly, while lower damping allows the cloth to continue moving for a longer time.</li>
+</ul>
+<p>
+These observations show how different physical properties affect the dynamics of cloth simulation, providing insight into the underlying mechanics.
+</p>
+
+
+<h2>Part 3: Handling Collisions with Other Objects</h2>
+
+<p>
+In this part, I added support for cloth collisions with other objects in the scene. Specifically, I handle collisions with spheres and planes. The goal is to adjust the position of point masses so that they remain just outside the surface of the object with which they collide, taking into account friction to simulate a more realistic interaction.
+</p>
+
+<h3>Implementation Details</h3>
+
+<h4>3.1: Handling Collisions with Spheres</h4>
+<p>
+I started by implementing the <code>Sphere::collide</code> method, which adjusts the position of a point mass if it intersects or is inside the sphere. The method works as follows:
+</p>
+<ul>
+  <li>
+    Compute where the point mass should have intersected the sphere by extending the path between its position and the sphere’s origin to the sphere’s surface. This intersection point is called the <em>tangent point</em>.
+  </li>
+  <li>
+    Compute the correction vector needed to move the point mass from its current position to the tangent point on the sphere’s surface.
+  </li>
+  <li>
+    Apply the correction vector to the point mass’s previous position, scaled down by friction using the formula \( (1 - f) \), where \( f \) is the friction coefficient.
+  </li>
+</ul>
+
+<p>
+The <code>Cloth::simulate</code> method was updated to check each point mass for potential collisions with every collision object in the scene (spheres and planes).
+</p>
+
+<p>
+The cloth should fall on the sphere and drape itself over it, coming to rest on the surface. Don’t worry if you see the warning: <code>Wireframe: warning: did not find attrib in_normal</code>.
+</p>
+
+<img src="ks5000.png" alt="Cloth simulation with sphere collision">
+<figcaption>Figure 1: Cloth resting on the sphere, default ks = 5000.</figcaption>
+
+<h4>3.2: Handling Collisions with Planes</h4>
+<p>
+Next, I implemented the <code>Plane::collide</code> method to handle collisions with planes. The method works as follows:
+</p>
+<ul>
+  <li>
+    Check if a point mass has crossed the plane’s surface in the last time step. If it has, compute where the point mass should have intersected the plane.
+  </li>
+  <li>
+    Calculate the correction vector needed to adjust the point mass back to the surface of the plane, just above the tangent point, using a small constant <code>SURFACE_OFFSET</code>.
+  </li>
+  <li>
+    Apply the correction vector to the point mass’s previous position, scaled by the friction factor \( (1 - f) \).
+  </li>
+</ul>
+
+<p>
+You should see the cloth slowly fall onto the plane and rest on its surface.
+</p>
+
+<img src="plane.png" alt="Cloth simulation with plane collision">
+<figcaption>Figure 2: Cloth resting on the plane, peaceful and stable.</figcaption>
+
+<h3>Results and Observations</h3>
+
+<h4>Sphere Collision Results</h4>
+<p>I tested the collision with the sphere by changing the spring constant \( k_s \). The following screenshots show the cloth resting on the sphere for different spring constants:
+</p>
+
+<h5>Default Spring Constant (ks = 5000)</h5>
+<img src="ks5000.png" alt="Cloth resting on the sphere, ks = 5000">
+<figcaption>Figure 3: Cloth simulation on sphere with ks = 5000.</figcaption>
+
+<h5>Lower Spring Constant (ks = 500)</h5>
+<p>
+With a lower spring constant, the cloth becomes more deformable, allowing more stretching as it falls onto the sphere. The cloth might drape more loosely.
+</p>
+<img src="ks500.png" alt="Cloth resting on the sphere, ks = 500">
+<figcaption>Figure 4: Cloth simulation on sphere with ks = 500.</figcaption>
+
+<h5>Higher Spring Constant (ks = 50000)</h5>
+<p>
+With a higher spring constant, the cloth is stiffer and less deformable. It maintains its shape more rigidly as it drapes over the sphere.
+</p>
+<img src="ks50000.png" alt="Cloth resting on the sphere, ks = 50000">
+<figcaption>Figure 5: Cloth simulation on sphere with ks = 50000.</figcaption>
+
+<h4>Plane Collision Results</h4>
+<p>
+The following image shows the cloth at rest on the plane. The cloth remains flat and smooth as it falls onto the surface, as expected.
+</p>
+<img src="planepeace.png" alt="Cloth resting peacefully on the plane">
+<figcaption>Figure 6: Cloth simulation at rest on the plane.</figcaption>
+
+<h3>Conclusion</h3>
+<p>
+By adding collision detection with spheres and planes, I was able to simulate more realistic cloth interactions with objects in the scene. The sphere collisions were tested with various spring constants, demonstrating how different values affect the cloth's behavior. The plane collision worked as expected, with the cloth coming to rest peacefully on the plane’s surface. These enhancements significantly improve the realism of the cloth simulation.
+</p>
+
+<h2>Part 4: Handling Self-Collisions</h2>
+
+<p>
+In this part of the homework, I implemented self-collision handling for the cloth simulation. Without self-collision detection, the cloth would clip through itself when it folds or falls onto itself, causing unrealistic behavior. I solved this issue by implementing spatial hashing, an efficient method to detect self-collisions and adjust the cloth’s point masses to prevent overlapping.
+</p>
+
+<h3>Implementation Details</h3>
+
+<p>
+The core idea behind the self-collision handling is to partition the 3D space into small 3D boxes (volumes) and use a hash table to efficiently look up point masses within the same volume. We then check if any pair of point masses in the same volume are too close and apply a correction force to move them apart. The steps for the implementation are as follows:
+</p>
+
+<ul>
+  <li><strong>Cloth::hash_position:</strong> This method maps each point mass’s position to a unique identifier based on the 3D box it belongs to. The position is truncated to the closest 3D box, and a unique key is calculated using the modulus operation. This helps us group point masses in the same spatial region.</li>
+  
+  <li><strong>Cloth::build_spatial_map:</strong> This method builds a spatial hash map where the keys are the unique identifiers for each 3D box, and the values are vectors of point masses located within those boxes. The map is built every time step to ensure it remains up-to-date.</li>
+  
+  <li><strong>Cloth::self_collide:</strong> This method looks up potential collision candidates for each point mass in the spatial hash map. If two point masses are too close (within twice the thickness distance), a correction vector is computed for one of the point masses to separate them. The final position update is averaged over all correction vectors and scaled down by the simulation steps to ensure smooth adjustments.</li>
+</ul>
+
+
+<p>
+With this setup, the cloth should fall and fold onto itself without clipping through itself, creating a more realistic simulation. Below are screenshots documenting how the cloth behaves as it falls and folds on itself, from the initial stage to a more restful state.
+</p>
+
+<h3>Self-Collision Behavior: Screenshots</h3>
+
+<p>
+Here are three screenshots showing the progression of the cloth’s self-collision behavior. The cloth starts with some initial folding, and by the end of the simulation, it comes to a more relaxed state. However, some minor bouncing might still be visible due to the absence of damping forces.
+</p>
+
+<h4>1. Early Self-Collision (Cloth Starts Folding)</h4>
+<img src="fold1.png" alt="Cloth starting to fold on itself during self-collision">
+<figcaption>Figure 1: Early stage of cloth folding on itself, detecting self-collision.</figcaption>
+
+<h4>2. Midway Self-Collision (Cloth Folding More Intently)</h4>
+<img src="fold2.png" alt="Cloth mid-folding during self-collision">
+<figcaption>Figure 2: Midway through the simulation, the cloth is folding more intensely on itself.</figcaption>
+
+<h4>3. Final Resting State (Cloth at Rest After Self-Collision)</h4>
+<img src="fold3.png" alt="Cloth at rest after folding on itself">
+<figcaption>Figure 3: Final resting state of the cloth, after self-collision handling.</figcaption>
+
+<h3>Varying Parameters: Density and Spring Constant (ks)</h3>
+
+<p>
+Next, we vary the simulation parameters such as density and spring constant (ks) to observe how they affect the behavior of the cloth as it folds on itself. Below are the results from different parameter settings:
+</p>
+
+<h4>1. Varying Density</h4>
+
+<p>
+The density of the cloth affects the mass of each point mass. A higher density makes the cloth heavier, causing it to fall slower and with more inertia, while a lower density allows the cloth to fall faster and with less resistance.
+</p>
+
+<h5>Cloth with High Density:</h5>
+<img src="highdenfold.png" alt="Cloth with high density falling on itself">
+<figcaption>Figure 4: Cloth with high density falls more slowly and folds gently on itself.</figcaption>
+
+<h5>Cloth with Low Density:</h5>
+<img src="lowdenfold.png" alt="Cloth with low density falling on itself">
+<figcaption>Figure 5: Cloth with low density falls faster and folds more quickly on itself.</figcaption>
+
+<h4>2. Varying Spring Constant (ks)</h4>
+
+<p>
+The spring constant \( k_s \) determines how stiff the cloth is. A lower spring constant makes the cloth more deformable, allowing it to stretch and fold more easily, while a higher spring constant results in a stiffer cloth that resists deformation.
+</p>
+
+<h5>Cloth with Low Spring Constant (ks = 2500):</h5>
+<img src="lowksfold.png" alt="Cloth with low ks falling on itself">
+<figcaption>Figure 6: Cloth with a low spring constant (ks = 2500) folds more easily and stretches more.</figcaption>
+
+<h5>Cloth with High Spring Constant (ks = 50000):</h5>
+<img src="highksfold.png" alt="Cloth with high ks falling on itself">
+<figcaption>Figure 7: Cloth with a high spring constant (ks = 50000) is stiffer and folds less.</figcaption>
+
+<h3>Conclusion and Observations</h3>
+
+<p>
+The self-collision handling using spatial hashing was successfully implemented, preventing the cloth from clipping through itself. We observed the following behaviors based on different simulation parameters:
+</p>
+
+<ul>
+  <li>A lower spring constant (ks) allows the cloth to deform and fold more easily, while a higher spring constant makes the cloth stiffer and less prone to folding.</li>
+  <li>A higher density makes the cloth heavier and slower to fall, while a lower density causes it to fall faster and more easily fold onto itself.</li>
+</ul>
+
+<p>
+The self-collision detection algorithm significantly improves the realism of the simulation, and while some minor bouncing can be observed due to the absence of damping, the cloth folds naturally and doesn't clip through itself.
+</p>
+
+
+<h2>Part 5: Shaders and Lighting Models</h2>
+
+<h3>Shader Program and How Vertex and Fragment Shaders Work Together</h3>
+
+<p>
+A <strong>shader program</strong> is a collection of instructions that are executed on the GPU (Graphics Processing Unit) to control how an object is rendered in a 3D environment. Shaders are used to calculate various aspects of the image such as lighting, material properties, and textures. There are two primary types of shaders involved in the rendering process:
+</p>
+
+<ul>
+    <li><strong>Vertex Shaders</strong>: The vertex shader processes each vertex's data (e.g., position, normal vector, texture coordinates) and transforms it into screen space. It applies transformations like translation, rotation, and projection.</li>
+    <li><strong>Fragment Shaders</strong>: The fragment shader determines the final color of each pixel. It computes the effects of lighting on the surface and applies materials, textures, and other visual effects to each fragment (pixel) that will be displayed on the screen.</li>
+</ul>
+
+<p>
+Together, vertex and fragment shaders work in a pipeline where the vertex shader sets up the necessary data (such as transformed vertices and normals), and the fragment shader uses this data to determine how light interacts with the surface, including lighting and material effects.
+</p>
+
+<h3>The Blinn-Phong Shading Model</h3>
+
+<p>
+The <strong>Blinn-Phong shading model</strong> is a lighting model used to simulate how light interacts with surfaces to produce realistic lighting effects. It is an extension of the Phong model and is widely used in real-time rendering due to its efficiency. The model consists of three components:
+</p>
+
+<ul>
+    <li><strong>Ambient Light:</strong> Represents the general illumination present in the scene. It does not depend on the surface orientation or position relative to the light source.</li>
+    <li><strong>Diffuse Light:</strong> Represents the light scattered when it hits a rough surface. It depends on the angle between the light source and the surface normal.</li>
+    <li><strong>Specular Light:</strong> Represents the reflective highlights on smooth surfaces. The intensity of the specular reflection depends on the angle between the view direction, light direction, and surface normal.</li>
+</ul>
+
+<p>
+The final color is calculated by adding these three components together: <br>
+<code>Color = Ambient + Diffuse + Specular</code>.
+</p>
+
+<h3>Blinn-Phong Shading Model Components</h3>
+
+<p>
+To better understand the effects of each component, I rendered the Blinn-Phong model with only one component at a time and then combined them to show the full result.
+</p>
+
+<h4>1. Ambient Component</h4>
+<p>
+The ambient component represents a uniform lighting applied across the surface, regardless of orientation or position.
+</p>
+<img src="ambient.png" alt="Ambient Component">
+<figcaption>Figure 1: Ambient component of the Blinn-Phong shading model.</figcaption>
+
+<h4>2. Diffuse Component</h4>
+<p>
+The diffuse component simulates how light is scattered when it hits a rough surface. It depends on the angle between the surface normal and the light direction.
+</p>
+<img src="diffuse.png" alt="Diffuse Component">
+<figcaption>Figure 2: Diffuse component of the Blinn-Phong shading model.</figcaption>
+
+<h4>3. Specular Component</h4>
+<p>
+The specular component represents shiny highlights on the surface. It depends on the light direction, view direction, and surface shininess.
+</p>
+<img src="spec.png" alt="Specular Component">
+<figcaption>Figure 3: Specular component of the Blinn-Phong shading model.</figcaption>
+
+<h4>4. Full Blinn-Phong Model</h4>
+<p>
+The complete Blinn-Phong model combines all three components (ambient, diffuse, and specular) to simulate more realistic lighting effects on the surface.
+</p>
+<img src="theall.png" alt="Full Blinn-Phong Model">
+<figcaption>Figure 4: Full Blinn-Phong shading model combining ambient, diffuse, and specular components.</figcaption>
+
+<h3>Texture Mapping with Custom Texture</h3>
+
+<p>
+For texture mapping, I applied my custom texture to the 3D object by modifying the textures in the `./textures/` directory. Below is a screenshot showing the object with my custom texture applied.
+</p>
+<img src="textureelm.png" alt="Custom Texture Mapping">
+<figcaption>Figure 5: Custom texture applied to the 3D object.</figcaption>
+
+<h3>Bump Mapping and Displacement Mapping</h3>
+
+<p>
+Both <strong>bump mapping</strong> and <strong>displacement mapping</strong> simulate surface details, but they do so differently:
+</p>
+
+<h4>Bump Mapping</h4>
+<p>
+Bump mapping modifies the normals to create the illusion of surface detail without changing the actual geometry of the object.
+</p>
+<img src="bump.png" alt="Bump Mapping">
+<figcaption>Figure 6: Bump mapping applied to the cloth and sphere.</figcaption>
+
+<h4>Displacement Mapping</h4>
+<p>
+Displacement mapping actually modifies the geometry of the surface by displacing the vertices according to a texture. This approach is more realistic but computationally expensive.
+</p>
+<img src="displacement.png" alt="Displacement Mapping">
+<figcaption>Figure 7: Displacement mapping applied to the sphere, showing altered geometry.</figcaption>
+
+<p>
+Comparison:
+<ul>
+  <li><strong>Bump Mapping:</strong> Simulates surface detail by modifying the normals. It is computationally cheaper but does not affect the actual geometry.</li>
+  <li><strong>Displacement Mapping:</strong> Alters the geometry itself, providing more realistic details, but it is more computationally expensive.</li>
+</ul>
+</p>
+
+<h3>Mirror Shader on Cloth and Sphere</h3>
+
+<p>
+A mirror shader simulates reflective surfaces, where the environment is reflected on the object's surface. Here's how it looks when applied to both the cloth and the sphere:
+</p>
+<img src="mirror.png" alt="Mirror Shader">
+<figcaption>Figure 8: Mirror shader applied to the cloth and sphere.</figcaption>
+
+<h3>Custom Shader Explanation</h3>
+
+<p>
+For the custom shaders, I focused on implementing the Blinn-Phong shading model, texture mapping, bump mapping, displacement mapping, and mirror shaders. The goal was to achieve a balance between visual quality and performance. The Blinn-Phong model allows for realistic lighting effects, while bump and displacement mapping enhance the surface detail. The mirror shader creates reflective surfaces for more dynamic and realistic visual interactions.
+</p>
+
+<h3>Conclusion</h3>
+
+<p>
+This part of the homework allowed me to experiment with advanced shading techniques, including the Blinn-Phong shading model, texture mapping, bump mapping, displacement mapping, and mirror shaders. By adjusting different parameters and using custom textures, I was able to create more realistic rendering effects, such as lighting, material interactions, and surface details. These techniques are widely used in real-time graphics and have a significant impact on visual fidelity in computer graphics.
+</p>
 
 		<h2>(Optional) Part 6: Extra Credit - Additional cloth simulation features!</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
